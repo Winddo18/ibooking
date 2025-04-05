@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自习室预约系统 - 管理员面板</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/mystyle.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-book-reader"></i>
+                    <span>自习室预约系统</span>
+                </div>
+            </div>
+            <div class="admin-profile">
+                <div class="avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="admin-info">
+                    <h3>管理员</h3>
+                    <p>{{request.session.userAccount}}</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#dashboard" onclick="showTab('dashboard')">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>控制面板</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#seats" onclick="showTab('seats')">
+                            <i class="fas fa-chair"></i>
+                            <span>座位管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#students" onclick="showTab('students')">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>学生管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#reservations" onclick="showTab('reservations')">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>预约管理</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/library/logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>退出登录</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="搜索...">
+                </div>
+                <div class="header-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Dashboard Tab -->
+                <section id="dashboard" class="tab-content active">
+                    <div class="section-header">
+                        <h2><i class="fas fa-tachometer-alt"></i> 控制面板</h2>
+                    </div>
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-chair"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>总座位数</h3>
+                                <p class="stat-number">125</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>注册学生</h3>
+                                <p class="stat-number">358</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>今日预约</h3>
+                                <p class="stat-number">42</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>使用率</h3>
+                                <p class="stat-number">78%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <h3>快速操作</h3>
+                        <div class="action-buttons">
+                            <a href="/library/addseatpage" class="action-card">
+                                <i class="fas fa-plus"></i>
+                                <span>添加座位</span>
+                            </a>
+                            <a href="#" class="action-card">
+                                <i class="fas fa-file-import"></i>
+                                <span>导入数据</span>
+                            </a>
+                            <a href="#" class="action-card">
+                                <i class="fas fa-file-export"></i>
+                                <span>导出报表</span>
+                            </a>
+                            <a href="#" class="action-card">
+                                <i class="fas fa-cog"></i>
+                                <span>系统设置</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Seats Tab -->
+                <section id="seats" class="tab-content">
+                    <div class="section-header">
+                        <h2><i class="fas fa-chair"></i> 座位管理</h2>
+                        <div class="section-actions">
+                            <a href="/library/addseatpage" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> 添加座位
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>查询座位</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="seat" action="/library/manageSeatPage" method="get" class="filter-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="campus"><i class="fas fa-map-marker-alt"></i> 校区</label>
+                                        <div class="select-wrapper">
+                                            <select id="campus" name="Campus">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.availableCampus %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="classroom"><i class="fas fa-door-open"></i> 教室</label>
+                                        <div class="select-wrapper">
+                                            <select id="classroom" name="Classroom">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.availableClassroom %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="index"><i class="fas fa-hashtag"></i> 座位</label>
+                                        <div class="select-wrapper">
+                                            <select id="index" name="Index">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.availableIndex %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="electricity"><i class="fas fa-plug"></i> 插座</label>
+                                        <div class="select-wrapper">
+                                            <select id="electricity" name="Electricity">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.availableElectricity %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> 查询
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-redo"></i> 重置
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Students Tab -->
+                <section id="students" class="tab-content">
+                    <div class="section-header">
+                        <h2><i class="fas fa-user-graduate"></i> 学生管理</h2>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>查询学生</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="student" action="/library/manageStudentPage" method="get" class="filter-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="name"><i class="fas fa-user"></i> 姓名</label>
+                                        <div class="select-wrapper">
+                                            <select id="name" name="Name">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.availableName %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="userid"><i class="fas fa-id-card"></i> 学号</label>
+                                        <div class="select-wrapper">
+                                            <select id="userid" name="UserID">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.availableUserID %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="email"><i class="fas fa-envelope"></i> 邮箱</label>
+                                        <div class="select-wrapper">
+                                            <select id="email" name="Email">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.availableEmail %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> 查询
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-redo"></i> 重置
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reservations Tab -->
+                <section id="reservations" class="tab-content">
+                    <div class="section-header">
+                        <h2><i class="fas fa-calendar-check"></i> 预约管理</h2>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>查询预约</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="reservation" action="/library/manageReservationPage" method="get" class="filter-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="year"><i class="fas fa-calendar-alt"></i> 年份</label>
+                                        <div class="select-wrapper">
+                                            <select id="year" name="Year">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.reservedDateYear %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="month"><i class="fas fa-calendar-day"></i> 月份</label>
+                                        <div class="select-wrapper">
+                                            <select id="month" name="Month">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.reservedDateMonth %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="day"><i class="fas fa-calendar-week"></i> 日期</label>
+                                        <div class="select-wrapper">
+                                            <select id="day" name="Day">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.reservedDateDay %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="state"><i class="fas fa-tag"></i> 状态</label>
+                                        <div class="select-wrapper">
+                                            <select id="state" name="State">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.reservedState %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="user-id"><i class="fas fa-id-card"></i> 学号</label>
+                                        <div class="select-wrapper">
+                                            <select id="user-id" name="UserID">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.reservedUserID %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="seat-id"><i class="fas fa-chair"></i> 座位</label>
+                                        <div class="select-wrapper">
+                                            <select id="seat-id" name="SeatID">
+                                                <option value="all">全部</option>
+                                                {% for i in request.session.context.reservedSeatID %}
+                                                <option value="{{i}}">{{i}}</option>
+                                                {%endfor%}
+                                            </select>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> 查询
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-redo"></i> 重置
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update active state in sidebar
+            document.querySelectorAll('.sidebar-nav li').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Highlight current tab in sidebar
+            document.querySelector(`.sidebar-nav a[href="#${tabId}"]`).parentElement.classList.add('active');
+        }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: #1a237e;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            z-index: 10;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .admin-profile {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background-color: #3949ab;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .avatar i {
+            font-size: 24px;
+        }
+        
+        .admin-info h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .admin-info p {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-nav a:hover,
+        .sidebar-nav li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-left-color: #fff;
+        }
+        
+        .sidebar-nav a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .logout-btn i {
+            margin-right: 10px;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .top-header {
+            height: 70px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        
+        .header-search {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fb;
+            border-radius: 30px;
+            padding: 8px 15px;
+            width: 300px;
+        }
+        
+        .header-search i {
+            color: #7f8c8d;
+            margin-right: 10px;
+        }
+        
+        .header-search input {
+            background: none;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 18px;
+            margin-left: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background-color: #f5f7fb;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #e74c3c;
+            color: #fff;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .content-area {
+            padding: 30px;
+            flex: 1;
+        }
+        
+        /* Tab Content Styles */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-header h2 i {
+            margin-right: 10px;
+            color: #3f51b5;
+        }
+        
+        /* Dashboard Stats */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 20px;
+            color: #fff;
+        }
+        
+        .stat-icon.blue {
+            background-color: #3f51b5;
+        }
+        
+        .stat-icon.green {
+            background-color: #4caf50;
+        }
+        
+        .stat-icon.orange {
+            background-color: #ff9800;
+        }
+        
+        .stat-icon.purple {
+            background-color: #9c27b0;
+        }
+        
+        .stat-details h3 {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .quick-actions h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #f5f7fb;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover {
+            background-color: #3f51b5;
+            color: #fff;
+            transform: translateY(-5px);
+        }
+        
+        .action-card i {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        /* Card Styles */
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            background-color: #fafafa;
+        }
+        
+        .card-header h3 {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Form Styles */
+        .filter-form {
+            width: 100%;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            padding: 0 10px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-group label i {
+            margin-right: 5px;
+            color: #3f51b5;
+        }
+        
+        .select-wrapper {
+            position: relative;
+        }
+        
+        .select-wrapper select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            appearance: none;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .select-wrapper select:focus {
+            border-color: #3f51b5;
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+            outline: none;
+        }
+        
+        .select-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            pointer-events: none;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .btn {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: #3f51b5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #303f9f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(63, 81, 181, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #dfe6e9;
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .sidebar .logo span,
+            .sidebar .admin-info,
+            .sidebar-nav a span,
+            .logout-btn span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            
+            .logo i {
+                margin-right: 0;
+            }
+            
+            .avatar {
+                margin-right: 0;
+            }
+            
+            .sidebar-nav a {
+                justify-content: center;
+            }
+            
+            .sidebar-nav a i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            
+            .logout-btn {
+                justify-content: center;
+            }
+            
+            .logout-btn i {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .header-search {
+                width: 200px;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 0;
+                position: fixed;
+                z-index: 999;
+                transition: all 0.3s;
+            }
+            
+            .sidebar.active {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .top-header {
+                padding: 0 15px;
+            }
+            
+            .header-search {
+                display: none;
+            }
+            
+            .content-area {
+                padding: 20px 15px;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>
