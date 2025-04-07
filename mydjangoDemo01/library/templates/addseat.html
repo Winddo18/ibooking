@@ -22,7 +22,79 @@
                 <p class="subtitle">请填写座位详细信息</p>
             </div>
 
-            <form action="#" method="get">
+            <form action="/library/addseat" method="get">
+                <div class="form-section">
+                    <h2><i class="fas fa-map-marker-alt"></i> 位置信息</h2>
+                    
+                    <div class="form-group">
+                        <label for="campus">校区</label>
+                        <div class="select-wrapper">
+                            <select id="campus" name="campus">
+                                <option value="江湾校区">江湾校区</option>
+                                <option value="邯郸校区">邯郸校区</option>
+                                <option value="枫林校区">枫林校区</option>
+                                <option value="张江校区">张江校区</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="classroom_1">教学楼</label>
+                            <div class="select-wrapper">
+                                <select id="classroom_1" name="classroom_1">
+                                    <option value="A">JA</option>
+                                    <option value="B">JB</option>
+                                    <option value="C">图书馆</option>
+                                    <option value="D">其他区域</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group half">
+                            <label for="classroom_2">教室号</label>
+                            <div class="number-input">
+                                <input type="number" id="classroom_2" name="classroom_2" placeholder="教室号" min="100" max="999" step="1" value="100">
+                                <div class="number-controls">
+                                    <button type="button" class="number-up" onclick="incrementValue('classroom_2', 1, 999)"><i class="fas fa-chevron-up"></i></button>
+                                    <button type="button" class="number-down" onclick="decrementValue('classroom_2', 100, 999)"><i class="fas fa-chevron-down"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="index_1">座位排号</label>
+                            <div class="number-input">
+                                <input type="number" id="index_1" name="index_1" min="1" max="50" step="1" value="1">
+                                <div class="number-controls">
+                                    <button type="button" class="number-up" onclick="incrementValue('index_1', 1, 50)"><i class="fas fa-chevron-up"></i></button>
+                                    <button type="button" class="number-down" onclick="decrementValue('index_1', 1, 50)"><i class="fas fa-chevron-down"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group half">
+                            <label for="index_2">座位号</label>
+                            <div class="number-input">
+                                <input type="number" id="index_2" name="index_2" min="1" max="20" step="1" value="1">
+                                <div class="number-controls">
+                                    <button type="button" class="number-up" onclick="incrementValue('index_2', 1, 20)"><i class="fas fa-chevron-up"></i></button>
+                                    <button type="button" class="number-down" onclick="decrementValue('index_2', 1, 20)"><i class="fas fa-chevron-down"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> 添加座位</button>
+                    <a href="/library/admin" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> 返回</a>
+                </div>
             </form>
         </div>
     </div>
