@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自习室预约系统 - 预约记录</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/table.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 侧边导航栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-book-reader"></i>
+                    <span>自习室预约系统</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="/library/distinguishIdentity?userAcc=admin&userPass=123456#dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>控制面板</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/library/distinguishIdentity?userAcc=admin&userPass=123456#seats">
+                            <i class="fas fa-chair"></i>
+                            <span>座位管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/library/distinguishIdentity?userAcc=admin&userPass=123456#students">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>学生管理</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="/library/distinguishIdentity?userAcc=admin&userPass=123456#reservations">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>预约管理</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/library/logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>退出登录</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1><i class="fas fa-calendar-check"></i> 预约记录管理</h1>
+                </div>
+                <div class="header-actions">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" placeholder="搜索预约记录...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="exportTableToCSV('预约记录.csv')">
+                            <i class="fas fa-download"></i> 导出CSV
+                        </button>
+                        <button class="btn btn-secondary" onclick="printTable()">
+                            <i class="fas fa-print"></i> 打印
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2>预约记录列表</h2>
+                            <span class="badge">{{ reservations|length }} 条记录</span>
+                        </div>
+                        <div class="card-tools">
+                            <div class="info-tooltip">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">管理员只能查看所有预约记录，无法修改预约信息</span>
+                            </div>
+                            <div class="view-options">
+                                <button class="view-btn active" data-view="table"><i class="fas fa-table"></i></button>
+                                <button class="view-btn" data-view="cards"><i class="fas fa-th-large"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="filters">
+                            <div class="filter-group">
+                                <label for="campusFilter">校区:</label>
+                                <select id="campusFilter" onchange="filterTable()">
+                                    <option value="">全部</option>
+                                    <!-- 动态生成校区选项 -->
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="classroomFilter">教室:</label>
+                                <select id="classroomFilter" onchange="filterTable()">
+                                    <option value="">全部</option>
+                                    <!-- 动态生成教室选项 -->
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="stateFilter">状态:</label>
+                                <select id="stateFilter" onchange="filterTable()">
+                                    <option value="">全部</option>
+                                    <option value="已预约">已预约</option>
+                                    <option value="已签到">已签到</option>
+                                    <option value="已取消">已取消</option>
+                                    <option value="已完成">已完成</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="dateFilter">日期:</label>
+                                <input type="date" id="dateFilter" onchange="filterTable()">
+                            </div>
+                        </div>
+
+                        <!-- 表格视图 -->
+                        <div class="table-view active">
+                            <div class="table-responsive">
+                                <table id="reservationTable" class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th onclick="sortTable(0)">学号 <i class="fas fa-sort"></i></th>
+                                            <th onclick="sortTable(1)">座位ID <i class="fas fa-sort"></i></th>
+                                            <th onclick="sortTable(2)">校区 <i class="fas fa-sort"></i></th>
+                                            <th onclick="sortTable(3)">教室 <i class="fas fa-sort"></i></th>
+                                            <th onclick="sortTable(4)">座位号 <i class="fas fa-sort"></i></th>
+                                            <th onclick="sortTable(5)">日期 <i class="fas fa-sort"></i></th>
+                                            <th onclick="sortTable(6)">开始时间 <i class="fas fa-sort"></i></th>
+                                            <th onclick="sortTable(7)">结束时间 <i class="fas fa-sort"></i></th>
+                                            <th onclick="sortTable(8)">状态 <i class="fas fa-sort"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for reservation in reservations %} 
+                                        <tr>
+                                            <td>{{ reservation.UserID }}</td>
+                                            <td>{{ reservation.SeatID }}</td>
+                                            <td>{{ reservation.SeatCampus }}</td>
+                                            <td>{{ reservation.SeatClassroom }}</td>
+                                            <td>{{ reservation.SeatIndex }}</td>
+                                            <td>{{ reservation.Date }}</td>
+                                            <td>{{ reservation.Start }}</td>
+                                            <td>{{ reservation.End }}</td>
+                                            <td>
+                                                <span class="status-badge {{ reservation.State }}">
+                                                    {{ reservation.State }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination">
+                                <button id="prevPage" disabled><i class="fas fa-chevron-left"></i> 上一页</button>
+                                <span id="pageInfo">第 <span id="currentPage">1</span> 页，共 <span id="totalPages">1</span> 页</span>
+                                <button id="nextPage"><i class="fas fa-chevron-right"></i> 下一页</button>
+                            </div>
+                        </div>
+
+                        <!-- 卡片视图 -->
+                        <div class="cards-view">
+                            <div class="reservation-cards">
+                                {% for reservation in reservations %}
+                                <div class="reservation-card">
+                                    <div class="card-header">
+                                        <span class="status-badge {{ reservation.State }}">{{ reservation.State }}</span>
+                                        <span class="reservation-date">{{ reservation.Date }}</span>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="info-group">
+                                            <label><i class="fas fa-user-graduate"></i> 学号:</label>
+                                            <span>{{ reservation.UserID }}</span>
+                                        </div>
+                                        <div class="info-group">
+                                            <label><i class="fas fa-map-marker-alt"></i> 位置:</label>
+                                            <span>{{ reservation.SeatCampus }} - {{ reservation.SeatClassroom }} - {{ reservation.SeatIndex }}号</span>
+                                        </div>
+                                        <div class="info-group">
+                                            <label><i class="fas fa-clock"></i> 时间段:</label>
+                                            <span>{{ reservation.Start }} - {{ reservation.End }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 表格排序功能
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("reservationTable");
+            switching = true;
+            // 设置排序方向为升序
+            dir = "asc";
+            
+            // 循环直到不再需要交换
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                // 遍历除表头外的所有行
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    
+                    // 获取要比较的两个元素
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    
+                    // 检查是否应该交换行
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (shouldSwitch) {
+                    // 如果需要交换，进行交换并标记已完成交换
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    // 每次交换计数加1
+                    switchcount++;
+                } else {
+                    // 如果没有交换且方向为"asc"，
+                    // 将方向设置为"desc"并重新运行循环
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+            
+            // 更新排序图标
+            updateSortIcons(n, dir);
+        }
+        
+        function updateSortIcons(columnIndex, direction) {
+            // 重置所有图标
+            var icons = document.querySelectorAll("th i.fas");
+            icons.forEach(function(icon) {
+                icon.className = "fas fa-sort";
+            });
+            
+            // 设置当前列的图标
+            var currentIcon = document.querySelectorAll("th")[columnIndex].querySelector("i");
+            if (direction === "asc") {
+                currentIcon.className = "fas fa-sort-up";
+            } else {
+                currentIcon.className = "fas fa-sort-down";
+            }
+        }
+        
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var input, filter, table, tr, td, i, j, txtValue, found;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("reservationTable");
+            tr = table.getElementsByTagName("tr");
+            
+            // 遍历所有表行，从索引1开始以跳过表头
+            for (i = 1; i < tr.length; i++) {
+                found = false;
+                td = tr[i].getElementsByTagName("td");
+                
+                // 检查该行的所有单元格
+                for (j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (found) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+            
+            // 重置分页
+            setupPagination();
+        });
+        
+        // 分页功能
+        const rowsPerPage = 10;
+        let currentPage = 1;
+        
+        function setupPagination() {
+            const table = document.getElementById("reservationTable");
+            const rows = table.querySelectorAll("tbody tr");
+            const totalRows = Array.from(rows).filter(row => row.style.display !== "none").length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+            
+            document.getElementById("totalPages").textContent = totalPages;
+            document.getElementById("currentPage").textContent = currentPage > totalPages ? 1 : currentPage;
+            
+            if (currentPage > totalPages) {
+                currentPage = 1;
+            }
+            
+            document.getElementById("prevPage").disabled = currentPage === 1;
+            document.getElementById("nextPage").disabled = currentPage === totalPages || totalPages === 0;
+            
+            showPage(currentPage);
+        }
+        
+        function showPage(page) {
+            const table = document.getElementById("reservationTable");
+            const rows = table.querySelectorAll("tbody tr");
+            let visibleRows = Array.from(rows).filter(row => row.style.display !== "none");
+            
+            visibleRows.forEach((row, index) => {
+                if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+                    row.classList.add("visible");
+                } else {
+                    row.classList.remove("visible");
+                }
+            });
+        }
+        
+        document.getElementById("prevPage").addEventListener("click", function() {
+            if (currentPage > 1) {
+                currentPage--;
+                document.getElementById("currentPage").textContent = currentPage;
+                showPage(currentPage);
+                document.getElementById("prevPage").disabled = currentPage === 1;
+                document.getElementById("nextPage").disabled = false;
+            }
+        });
+        
+        document.getElementById("nextPage").addEventListener("click", function() {
+            const table = document.getElementById("reservationTable");
+            const rows = table.querySelectorAll("tbody tr");
+            const totalRows = Array.from(rows).filter(row => row.style.display !== "none").length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+            
+            if (currentPage < totalPages) {
+                currentPage++;
+                document.getElementById("currentPage").textContent = currentPage;
+                showPage(currentPage);
+                document.getElementById("nextPage").disabled = currentPage === totalPages;
+                document.getElementById("prevPage").disabled = false;
+            }
+        });
+        
+        // 视图切换功能
+        document.querySelectorAll('.view-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const viewType = this.getAttribute('data-view');
+                
+                // 更新按钮状态
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // 切换视图
+                if (viewType === 'table') {
+                    document.querySelector('.table-view').classList.add('active');
+                    document.querySelector('.cards-view').classList.remove('active');
+                } else {
+                    document.querySelector('.table-view').classList.remove('active');
+                    document.querySelector('.cards-view').classList.add('active');
+                }
+            });
+        });
+        
+        // 过滤功能
+        function filterTable() {
+            const campusFilter = document.getElementById('campusFilter').value;
+            const classroomFilter = document.getElementById('classroomFilter').value;
+            const stateFilter = document.getElementById('stateFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            const table = document.getElementById("reservationTable");
+            const rows = table.getElementsByTagName("tr");
+            
+            // 遍历所有表行，从索引1开始以跳过表头
+            for (let i = 1; i < rows.length; i++) {
+                const campus = rows[i].getElementsByTagName("td")[2].textContent;
+                const classroom = rows[i].getElementsByTagName("td")[3].textContent;
+                const state = rows[i].getElementsByTagName("td")[8].textContent.trim();
+                const date = rows[i].getElementsByTagName("td")[5].textContent;
+                
+                const campusMatch = !campusFilter || campus === campusFilter;
+                const classroomMatch = !classroomFilter || classroom === classroomFilter;
+                const stateMatch = !stateFilter || state === stateFilter;
+                const dateMatch = !dateFilter || date === dateFilter;
+                
+                if (campusMatch && classroomMatch && stateMatch && dateMatch) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+            
+            // 重置分页
+            currentPage = 1;
+            setupPagination();
+        }
+        
+        // 导出CSV功能
+        function exportTableToCSV(filename) {
+            const table = document.getElementById("reservationTable");
+            let csv = [];
+            let rows = table.querySelectorAll("tr");
+            
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].style.display !== "none" || i === 0) { // 包括表头和可见行
+                    let row = [], cols = rows[i].querySelectorAll("td, th");
+                    
+                    for (let j = 0; j < cols.length; j++) {
+                        // 获取文本内容并处理引号
+                        let text = cols[j].innerText;
+                        text = text.replace(/"/g, '""'); // 转义引号
+                        row.push('"' + text + '"');
+                    }
+                    
+                    csv.push(row.join(","));
+                }
+            }
+            
+            // 下载CSV文件
+            downloadCSV(csv.join("\n"), filename);
+        }
+        
+        function downloadCSV(csv, filename) {
+            let csvFile;
+            let downloadLink;
+            
+            // CSV文件
+            csvFile = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
+            
+            // 下载链接
+            downloadLink = document.createElement("a");
+            
+            // 文件名
+            downloadLink.download = filename;
+            
+            // 创建下载链接的URL
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            
+            // 隐藏下载链接
+            downloadLink.style.display = "none";
+            
+            // 添加链接到DOM
+            document.body.appendChild(downloadLink);
+            
+            // 点击下载
+            downloadLink.click();
+            
+            // 移除链接
+            document.body.removeChild(downloadLink);
+        }
+        
+        // 打印功能
+        function printTable() {
+            const printContents = document.querySelector('.table-responsive').innerHTML;
+            const originalContents = document.body.innerHTML;
+            
+            document.body.innerHTML = `
+                <div class="print-header">
+                    <h1>自习室预约系统 - 预约记录</h1>
+                    <p>打印时间: ${new Date().toLocaleString()}</p>
+                </div>
+                <div class="print-content">
+                    ${printContents}
+                </div>
+            `;
+            
+            window.print();
+            document.body.innerHTML = originalContents;
+            location.reload();
+        }
+        
+        // 页面加载时初始化
+        window.onload = function() {
+            // 填充筛选下拉框
+            populateFilters();
+            // 设置分页
+            setupPagination();
+            // 显示第一页
+            showPage(1);
+        };
+        
+        // 填充筛选器选项
+        function populateFilters() {
+            const table = document.getElementById("reservationTable");
+            const rows = table.getElementsByTagName("tr");
+            const campuses = new Set();
+            const classrooms = new Set();
+            
+            // 从表格数据中收集唯一值
+            for (let i = 1; i < rows.length; i++) {
+                const campus = rows[i].getElementsByTagName("td")[2].textContent;
+                const classroom = rows[i].getElementsByTagName("td")[3].textContent;
+                
+                campuses.add(campus);
+                classrooms.add(classroom);
+            }
+            
+            // 填充校区筛选器
+            const campusFilter = document.getElementById('campusFilter');
+            campuses.forEach(campus => {
+                const option = document.createElement('option');
+                option.value = campus;
+                option.textContent = campus;
+                campusFilter.appendChild(option);
+            });
+            
+            // 填充教室筛选器
+            const classroomFilter = document.getElementById('classroomFilter');
+            classrooms.forEach(classroom => {
+                const option = document.createElement('option');
+                option.value = classroom;
+                option.textContent = classroom;
+                classroomFilter.appendChild(option);
+            });
+        }
+    </script>
+
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* 布局 */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 250px;
+            background: #1a237e;
+            color: #fff;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-nav a:hover,
+        .sidebar-nav li.active a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-left-color: #fff;
+        }
+        
+        .sidebar-nav a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .logout-btn i {
+            margin-right: 10px;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .top-header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .page-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-title h1 i {
+            margin-right: 10px;
+            color: #3f51b5;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-container {
+            position: relative;
+            margin-right: 20px;
+        }
+        
+        .search-container input {
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            width: 250px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .search-container input:focus {
+            outline: none;
+            border-color: #3f51b5;
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+            width: 300px;
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .content-area {
+            padding: 30px;
+            flex: 1;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .card-title .badge {
+            background-color: #3f51b5;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .card-tools {
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-tooltip {
+            position: relative;
+            margin-right: 15px;
+        }
+        
+        .info-tooltip i {
+            color: #3f51b5;
+            cursor: pointer;
+        }
+        
+        .tooltip-text {
+            visibility: hidden;
+            width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+        
+        .info-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .view-options {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .view-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            width: 36px;
+            height: 36px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .view-btn.active {
+            background-color: #3f51b5;
+            color: #fff;
+            border-color: #3f51b5;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* 筛选器样式 */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .filter-group label {
+            margin-right: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            min-width: 120px;
+        }
+        
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #3f51b5;
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+        }
+        
+        /* 表格视图 */
+        .table-view {
+            display: none;
+        }
+        
+        .table-view.active {
+            display: block;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        
+        .data-table th {
+            background-color: #f5f7fb;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .data-table th:hover {
+            background-color: #eef1f7;
+        }
+        
+        .data-table th i {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+        
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        
+        .data-table tbody tr {
+            transition: all 0.3s;
+        }
+        
+        .data-table tbody tr:hover {
+            background-color: #f9fafc;
+        }
+        
+        .data-table tbody tr.visible {
+            display: table-row;
+        }
+        
+        .data-table tbody tr:not(.visible) {
+            display: none;
+        }
+        
+        /* 状态标签 */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-badge.已预约 {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-badge.已签到 {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .status-badge.已取消 {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .status-badge.已完成 {
+            background-color: #e0f2f1;
+            color: #00796b;
+        }
+        
+        /* 分页控件 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .pagination button {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            background-color: #f5f7fb;
+            border-color: #3f51b5;
+            color: #3f51b5;
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination button i {
+            margin-right: 5px;
+        }
+        
+        .pagination #nextPage i {
+            margin-right: 0;
+            margin-left: 5px;
+        }
+        
+        .pagination span {
+            margin: 0 15px;
+            font-size: 14px;
+        }
+        
+        /* 卡片视图 */
+        .cards-view {
+            display: none;
+        }
+        
+        .cards-view.active {
+            display: block;
+        }
+        
+        .reservation-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .reservation-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid #eee;
+        }
+        
+        .reservation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reservation-card .card-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9fafc;
+        }
+        
+        .reservation-card .reservation-date {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .reservation-card .card-content {
+            padding: 15px;
+        }
+        
+        .reservation-card .info-group {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .reservation-card .info-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reservation-card .info-group label {
+            width: 80px;
+            font-weight: 500;
+            color: #7f8c8d;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .reservation-card .info-group label i {
+            margin-right: 5px;
+            color: #3f51b5;
+        }
+        
+        .reservation-card .info-group span {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: #3f51b5;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #303f9f;
+        }
+        
+        .btn-secondary {
+            background-color: #f5f7fb;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #eef1f7;
+            border-color: #3f51b5;
+            color: #3f51b5;
+        }
+        
+        /* 打印样式 */
+        @media print {
+            body {
+                background-color: white;
+                font-size: 12pt;
+            }
+            
+            .sidebar, .top-header, .filters, .pagination, .card-tools {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: none;
+            }
+            
+            .print-header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .print-header h1 {
+                font-size: 18pt;
+                margin-bottom: 5px;
+            }
+            
+            .print-header p {
+                font-size: 10pt;
+                color: #666;
+            }
+            
+            .data-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            .data-table th, .data-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+            
+            .data-table th {
+                background-color: #f2f2f2;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+            }
+            
+            .search-container input {
+                width: 200px;
+            }
+            
+            .search-container input:focus {
+                width: 240px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar .logo span,
+            .sidebar-nav a span,
+            .logout-btn span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            
+            .sidebar-nav a {
+                justify-content: center;
+            }
+            
+            .sidebar-nav a i {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .search-container {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .search-container input {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .filter-group select,
+            .filter-group input {
+                flex: 1;
+            }
+            
+            .reservation-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .sidebar {
+                position: fixed;
+                left: -70px;
+                transition: all 0.3s;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .content-area {
+                padding: 20px 15px;
+            }
+            
+            .data-table {
+                font-size: 12px;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 8px;
+            }
+            
+            .pagination {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</body>
+</html>
