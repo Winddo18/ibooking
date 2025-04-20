@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自习室预约系统</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --border-color: #ddd;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--dark-gray);
+            margin-bottom: 10px;
+        }
+        
+        .responsive-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .responsive-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px 15px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1px;
+        }
+        
+        .responsive-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .responsive-table tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+        
+        .responsive-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .responsive-table tr:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .responsive-table input[type="text"],
+        .responsive-table input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        
+        .responsive-table input[readonly] {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+        
+        .responsive-table input[type="submit"] {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        
+        .responsive-table input[type="submit"]:hover {
+            background-color: #27ae60;
+        }
+        
+        /* 响应式设计 */
+        @media screen and (max-width: 768px) {
+            .responsive-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .responsive-table thead, 
+            .responsive-table tbody, 
+            .responsive-table th, 
+            .responsive-table td, 
+            .responsive-table tr {
+                display: block;
+            }
+            
+            .responsive-table thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            
+            .responsive-table tr {
+                border: 1px solid var(--border-color);
+                margin-bottom: 15px;
+            }
+            
+            .responsive-table td {
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50%;
+                text-align: left;
+            }
+            
+            .responsive-table td:before {
+                position: absolute;
+                top: 12px;
+                left: 12px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            
+            /* 为每个单元格添加标签 */
+            .responsive-table td:nth-of-type(1):before { content: "ID"; }
+            .responsive-table td:nth-of-type(2):before { content: "校区"; }
+            .responsive-table td:nth-of-type(3):before { content: "教室"; }
+            .responsive-table td:nth-of-type(4):before { content: "座位号"; }
+            .responsive-table td:nth-of-type(5):before { content: "电源"; }
+            .responsive-table td:nth-of-type(6):before { content: "最长时间"; }
+            .responsive-table td:nth-of-type(7):before { content: "开始时间"; }
+            .responsive-table td:nth-of-type(8):before { content: "结束时间"; }
+            .responsive-table td:nth-of-type(9):before { content: "可用性"; }
+            .responsive-table td:nth-of-type(10):before { content: "预约开始"; }
+            .responsive-table td:nth-of-type(11):before { content: "预约结束"; }
+            .responsive-table td:nth-of-type(12):before { content: "操作"; }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #777;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>自习室座位预约系统</h1>
+            <p>请选择合适的座位和时间段进行预约</p>
+        </div>
+        
+        <div class="table-container">
+            <table class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>校区</th>
+                        <th>教室</th>
+                        <th>座位号</th>
+                        <th>电源</th>
+                        <th>最长时间</th>
+                        <th>可用开始</th>
+                        <th>可用结束</th>
+                        <th>可用状态</th>
+                        <th>预约开始</th>
+                        <th>预约结束</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seat in seats %}
+                    <tr>
+                        <td>
+                            <form method="get" action="/library/reservation" id="form-{{seat.Id}}">
+                                <input type="number" name="SeatID" value="{{seat.Id}}" readonly>
+                        </td>
+                        <td><input type="text" value="{{seat.Campus}}" readonly></td>
+                        <td><input type="text" value="{{seat.Classroom}}" readonly></td>
+                        <td><input type="text" value="{{seat.Index}}" readonly></td>
+                        <td><input type="text" value="{{seat.Electricity}}" readonly></td>
+                        <td><input type="number" name="MaxTime" value="{{seat.MaxTime}}" readonly></td>
+                        <td><input type="number" name="AvailableStart" value="{{seat.Start}}" readonly></td>
+                        <td><input type="number" name="AvailableEnd" value="{{seat.End}}" readonly></td>
+                        <td><input type="text" value="{{seat.accessable}}" readonly></td>
+                        <td><input type="number" name="Start" min="{{seat.Start}}" max="{{seat.End}}" step="1" value="{{seat.Start}}" style="width: 70px" required></td>
+                        <td><input type="number" name="End" min="{{seat.Start}}" max="{{seat.End}}" step="1" value="{{seat.End}}" style="width: 70px" required></td>
+                        <td>
+                            <input type="submit" value="预约">
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 自习室预约系统 - 为学生提供便捷的座位预约服务</p>
+        </div>
+    </div>
+</body>
+</html>
