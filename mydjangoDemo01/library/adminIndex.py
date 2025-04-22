@@ -8,6 +8,7 @@ from .utils import *
 Seat Information
 """
 
+
 def addSeatPage(request):
     return render(request,"addseat.html")
 
@@ -20,13 +21,27 @@ def addSeat(request):
     Index_1=request.GET.get("index_1",None)
     Index_2=request.GET.get("index_2",None)
     Index=str(Index_1).zfill(3)+str(Index_2).zfill(3)
-   
+    Electricity=(request.GET.get("electricity",None)=="Powered") #Powered->1  Unpowered->0
+    Start=request.GET.get("start",None)
+    End=request.GET.get("end",None)
+    Maxtime=request.GET.get("maxtime",None)
+    State=request.GET.get("state",None)
+    if State=="不可用":
+        State=-1
+    elif State=="空闲":
+        State=0
+    elif State=="被占用":
+        State=1
+    else:
+        State=None
     #在 SeatInfo 表中添加记录
     SeatInfo.objects.create(
         Campus=Campus,
         Classroom=Classroom,
         Index=Index,
-       
+        Electricity=Electricity,
+        Mask=startend2mask(int(Start),int(End)),
+        MaxTime=Maxtime,
     )
     #return redirect("/page/adminIndex.html")
     return render(request,"adminIndex.html")
