@@ -8,6 +8,25 @@ from .utils import *
 Seat Information
 """
 
+def startend2mask(start,end):
+    mask=""
+    for i in range(24):
+        if i >=start and i <end:
+            mask=mask+"1"
+        else:
+            mask=mask+"0"
+    #print("=> 开放时间为：",mask," .. mask的长度为:",len(mask))
+    return mask
+def mask2startend(mask):
+    start=0
+    end=0
+    start=mask.find("1")
+    end=mask.rfind("1")
+    if start==-1 or end==-1:
+        start=0
+        end=0
+    return start,end
+
 
 def addSeatPage(request):
     return render(request,"addseat.html")
