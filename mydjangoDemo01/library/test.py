@@ -53,7 +53,7 @@ def test_seatAvailable():
         print("=> seatAvailable函数通过测试")
     else:
         print("=> 请重新检查seatAvailable函数")
-
+#2025-5-1
 def main():
     test_getInformationOption()
     test_startend2mask()
