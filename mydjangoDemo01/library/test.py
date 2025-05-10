@@ -145,7 +145,7 @@ class Demo(TestCase):
             print(f"=> 人类可读格式测试失败: {str(e)}")
     def test_sendemail(self):
         from smtplib import SMTPException
-        from sendemail import sendemail
+        from .sendemail import sendemail
         Head = "自习室管理系统自动邮箱 - 测试邮件"
         Context = "这是一封测试邮件，来自你的 Django 项目。"
         ToAddress = "收件人邮箱@example.com"  # 请改为你自己的真实收件邮箱
@@ -194,17 +194,19 @@ class Demo(TestCase):
                 print(f"❌ 测试失败")
                 print(f"📩 错误信息: {msg}")
             print("=" * 50 + "\n")
-    def test_get_remind_time():
-        from apscheduler import getRemindTime
+
+    def test_get_remind_time(self):
+        from .apscheduler import getRemindTime
         remind_time = getRemindTime(15)
         print(f"提醒时间: {remind_time}")  # 观察输出时间是否合逻辑
 
-    def test_get_deadline():
-        from apscheduler import getDeadline
+    def test_get_deadline(self):
+        from .apscheduler import getDeadline
         deadline = getDeadline(15)
         print(f"截止时间: {deadline}")  # 观察输出时间是否合逻辑
-    def test_occupy_and_release_seat():
-        from apscheduler import occupySeat, releaseSeat
+
+    def test_occupy_and_release_seat(self):
+        from .apscheduler import occupySeat, releaseSeat
         class DummySeat:
             def __init__(self):
                 self.Used = "0" * 24
