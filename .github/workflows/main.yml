@@ -29,7 +29,7 @@ jobs:
 
       - name: 运行 Django 开发服务器
         run: |
-          python manage.py runserver 0.0.0.0:8000
+          python mydjangoDemo01/manage.py runserver 0.0.0.0:8000
         env:
           PYTHONUNBUFFERED: 1
           DJANGO_SETTINGS_MODULE: mydjangoDemo01/mydjangoDemo01/settings.py
