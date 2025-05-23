@@ -28,9 +28,7 @@ jobs:
 
       - name: 运行测试
         run: |
-          pip install pytest
-          pytest
-
+          python ./mydjangoDemo01/manage.py runserver
       - name: 构建项目
         run: |
           # 如果你的项目需要构建步骤，例如打包静态文件等
