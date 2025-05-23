@@ -1,0 +1,45 @@
+name: CI/CD 测试
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 运行测试
+        run: |
+          pip install pytest
+          pytest
+
+      - name: 构建项目
+        run: |
+          # 如果你的项目需要构建步骤，例如打包静态文件等
+          echo "构建项目（如果需要）"
+          # 例如：npm run build 或 python setup.py build
+
+      - name: 模拟部署到本地
+        run: |
+          echo "模拟部署到本地服务器"
+          # 这里可以添加模拟部署的命令，例如将构建结果复制到本地目录
+          # mkdir -p /path/to/local/deploy
+          # cp -r ./build/* /path/to/local/deploy/
