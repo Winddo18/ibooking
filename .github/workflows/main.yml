@@ -30,10 +30,10 @@ jobs:
       - name: 运行 Django 开发服务器
         run: |
           python mydjangoDemo01/manage.py runserver 0.0.0.0:8000
-        env:
-          PYTHONUNBUFFERED: 1
-          DJANGO_SETTINGS_MODULE: mydjangoDemo01.mydjangoDemo01.settings
-        continue-on-error: true  # 如果你不希望这个步骤导致整个流程失败
+        # env:
+        # #   PYTHONUNBUFFERED: 1
+        # #   # DJANGO_SETTINGS_MODULE: mydjangoDemo01.mydjangoDemo01.settings
+        # # continue-on-error: true  # 如果你不希望这个步骤导致整个流程失败
 
       - name: 模拟部署到本地
         run: |
