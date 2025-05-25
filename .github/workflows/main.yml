@@ -1,9 +1,12 @@
-name: CI/CD
+name: test
 
 on:
   push:
     branches:
-      - master  # 指定触发工作流的分支
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
