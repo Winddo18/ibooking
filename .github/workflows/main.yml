@@ -1,43 +1,85 @@
-name: CI/CD 测试
+name: CI/CD
 
 on:
   push:
     branches:
-      - master
-  pull_request:
-    branches:
-      - master
+      - master  # 指定触发工作流的分支
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest  # 使用 GitHub 提供的 Ubuntu 环境
 
     steps:
-      - name: 检出代码
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3  # 检出代码
 
-      - name: 设置 Python 环境
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.8'  # 设置 Python 版本
 
-      - name: 安装依赖
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt  # 安装依赖
 
-
-      - name: 运行 Django 开发服务器
+      - name: Run tests
         run: |
-          python mydjangoDemo01/manage.py runserver 0.0.0.0:8000
-        # env:
-        # #   PYTHONUNBUFFERED: 1
-        # #   # DJANGO_SETTINGS_MODULE: mydjangoDemo01.mydjangoDemo01.settings
-        # # continue-on-error: true  # 如果你不希望这个步骤导致整个流程失败
+          python manage.py test  # 运行测试
 
-      - name: 模拟部署到本地
-        run: |
-          echo "模拟部署到本地服务器"
-          # 这里可以添加模拟部署的命令，例如将构建结果复制到本地目录
-          # mkdir -p /path/to/local/deploy
-          # cp -r ./build/* /path/to/local/deploy/
+      - name: Build and deploy
+        uses: easingthemes/ssh-deploy@v2.0.7  # 使用 SSH 部署
+        env:
+          SSH_PRIVATE_KEY: "-----BEGIN OPENSSH PRIVATE KEY-----
+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
+-----END OPENSSH PRIVATE KEY-----
+"  # 从仓库密钥中获取 SSH 私钥
+          REMOTE_USER: "root"  # 服务器用户名
+          REMOTE_HOST: "47.97.50.93"  # 服务器 IP
+          TARGET: "/root"  # 服务器目标目录
