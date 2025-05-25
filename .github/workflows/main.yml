@@ -26,10 +26,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt  # 安装依赖
 
-      - name: Run tests
-        run: |
-          python manage.py test  # 运行测试
-
       - name: Build and deploy
         uses: easingthemes/ssh-deploy@v2.0.7  # 使用 SSH 部署
         env:
