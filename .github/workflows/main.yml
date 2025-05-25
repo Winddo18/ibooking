@@ -81,3 +81,4 @@ ZpCHSvLI5ycAAAAccm9vdEBpWmJwMWJiN2Vldmp1NGV6c3Q4bHV0WgECAwQFBgc=
           REMOTE_USER: "root"  # 服务器用户名
           REMOTE_HOST: "47.97.50.93"  # 服务器 IP
           TARGET: "/root"  # 服务器目标目录
+          SOURCE: "/home/runner/work/ibooking/ibooking/"
