@@ -27,7 +27,7 @@ jobs:
 
       - name: 🧪 Run Django tests
         run: |
-          python manage.py test
+          python mydjangoDemo01/manage.py test
 
       - name: 📦 Upload project to server via SCP
         uses: appleboy/scp-action@master
