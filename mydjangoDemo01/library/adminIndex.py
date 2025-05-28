@@ -3,11 +3,6 @@ from django.shortcuts import render,redirect,HttpResponse
 from .models import *
 from .utils import *
 
-
-"""
-Seat Information
-"""
-
 def startend2mask(start,end):
     mask=""
     for i in range(24):
@@ -26,10 +21,6 @@ def mask2startend(mask):
         start=0
         end=0
     return start,end
-
-
-def addSeatPage(request):
-    return render(request,"addseat.html")
 
 def addSeat(request):
     #从前端表单中获取数据
