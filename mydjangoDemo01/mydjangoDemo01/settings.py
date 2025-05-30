@@ -27,8 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     # "10.177.69.90",
-    "127.0.0.1",
-    # "0.0.0.0",
+    # "127.0.0.1",
+    "0.0.0.0",
 ]
 
 
@@ -89,10 +89,10 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST' : '127.0.0.1', #不能有多余的空格
+        'HOST' : '47.97.50.93', #不能有多余的空格
         'PORT' : 3306 ,
         'USER': 'root',
-        'PASSWORD' : '123456789*.',
+        'PASSWORD' : 'Fudan123456',
         'NAME': 'library',
     }
     # 'default': {
