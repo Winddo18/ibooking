@@ -146,3 +146,20 @@ def sign(request):
         student=UserInfo.objects.get(UserID=int(request.session['userAccount']))
     )
     return render(request,"studentIndex.html")
+def is_reservation_time_valid(start, end, max_time, available_start, available_end):
+    """
+    检查预约时间是否有效
+    返回 (True, "") 表示合法
+    返回 (False, 错误信息) 表示非法
+    """
+    if start > end:
+        return False, "结束时间不能早于开始时间！"
+    if end < 8:
+        return False, "预约已经过期！"
+    if end - start > max_time:
+        return False, f"拒绝内卷！学习时长不得大于{max_time}小时"
+    if start < available_start:
+        return False, f"教室最早的开放时间为{available_start}点"
+    if end > available_end:
+        return False, f"教室最晚开放到{available_end}点"
+    return True, ""
