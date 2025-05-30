@@ -17,7 +17,7 @@ seatInit()
 from .log2index import topage,index,userRegister,register,distinguishIdentity
 
 # Admin Index 
-from .adminIndex import addSeat,addSeatPage,manageSeatPage,modifySeat
+from .adminIndex import addSeat,addSeatPage,modifySeat
 from .adminIndex import manageStudentPage,modifyStudent
 from .adminIndex import manageReservationPage
 
