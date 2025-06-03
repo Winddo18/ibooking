@@ -27,7 +27,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: ✅ Run Django tests
-        # run: |
+        run: |
         #   python mydjangoDemo01/manage.pya
 
       - name: 📤 Upload project to server
