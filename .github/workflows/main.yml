@@ -1,0 +1,55 @@
+name: Django CI/CD
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🧪 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: ✅ Run Django tests
+        run: |
+          # python mydjangoDemo01/manage.py test
+
+      - name: 📤 Upload project to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: 47.97.50.93
+          username: root
+          password: Fudan123456
+          source: "."
+          target: "/root/mydjangoDemo01"
+
+      # - name: 🚀 Execute remote commands via SSH
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USER }}
+      #     password: ${{ secrets.PASSWORD }}
+      #     script: |
+      #       cd ~/django_project
+      #       source venv/bin/activate  # 如果你使用 virtualenv，请根据你的目录修改
+      #       pip install -r requirements.txt
+      #       python manage.py migrate
+      #       python manage.py collectstatic --noinput
+      #       # 如果你使用 gunicorn 或 supervisor 启动服务
+      #       sudo systemctl restart gunicorn
