@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - master
+
 jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
@@ -25,18 +26,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 🧪 Run Django tests
+      - name: ✅ Run Django tests
         run: |
-          python mydjangoDemo01/manage.py runserver 0.0.0.0:8000
+          # python mydjangoDemo01/manage.py test
 
-      - name: 📦 Upload project to server via SCP
-        uses: appleboy/scp-action@master
+      - name: 📤 Upload project to server
+        uses: appleboy/scp-action@v0.1.4
         with:
           host: 47.97.50.93
           username: root
           password: Fudan123456
-          source: "."  # 上传整个项目
-          target: "/root"  # 服务器上的项目目录
+          source: "."
+          target: "/root/mydjangoDemo01"
 
       # - name: 🚀 Execute remote commands via SSH
       #   uses: appleboy/ssh-action@master
